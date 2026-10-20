@@ -38,6 +38,7 @@ export function SiteFooter() {
         <div className="space-y-2">
           <PrivacyNote compact />
           <p className="text-[12.5px] leading-5 text-muted">Demo clock fixed at Tue, Oct 20, 2026 · 10:30 AM Pacific Time.</p>
+          <p className="text-[12.5px] leading-5 text-muted">Photos: Unsplash stock images of models, credited on the About page.</p>
         </div>
       </div>
     </footer>

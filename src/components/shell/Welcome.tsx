@@ -291,7 +291,7 @@ export function Welcome({ onEnter }: { onEnter: (personaId: string) => void }) {
                   { t: "Tells Cosign about her business", b: "Stage, niche, city, goal, and topics. Thirty seconds, and every recommendation from then on says why it was chosen.", tag: "Personalize" },
                   { t: "Joins circles that fit", b: "First 100 Orders for founders in their first year, and Vancouver Consumer Brands for local founders. Small, private, and curated.", tag: "Communities" },
                   { t: "Asks one specific question", b: "“Add-to-cart looks fine but few people finish checkout. Where do I look first?” Two merchants who have been there reply by morning.", tag: "Questions" },
-                  { t: "Walks into open office hours", b: `${sam.name}, who has audited 100+ storefronts, has the door open. ${maya.name.split(" ")[0]} pulls up a chair, puts her question on the whiteboard, and listens while Sam works through Hana’s store first.`, tag: "Office Hours" },
+                  { t: "Hops into open office hours", b: `${sam.name}, who has audited 100+ storefronts, has the door open on a video call and is reviewing Hana’s product page. ${maya.name.split(" ")[0]} joins, raises her hand, and picks up Hana’s fix before her own turn.`, tag: "Office Hours" },
                   { t: "Leaves with a next step", b: "“Move shipping costs onto the product page this week.” She logs it, and cosigns the answer that pointed her there.", tag: "Progress" },
                 ].map((s, i) => (
                   <li key={s.t} className="relative">
@@ -313,7 +313,7 @@ export function Welcome({ onEnter }: { onEnter: (personaId: string) => void }) {
             <SectionTitle id="formats-title">Three ways to get time with someone who’s done it.</SectionTitle>
             <div className="mt-12 grid gap-5 md:grid-cols-3">
               {[
-                { icon: "radio" as IconName, name: "Drop-in office hours", when: "When you’re stuck right now", body: "Like a professor’s office hours. When the door is open, walk in, pull up a chair, add your question to the whiteboard, and learn from everyone else’s too.", spec: "NO BOOKING · DOOR OPEN FOR AN HOUR" },
+                { icon: "radio" as IconName, name: "Drop-in office hours", when: "When you’re stuck right now", body: "Like a professor’s office hours, on a video call. When the door is open, hop in, raise your hand, and learn from everyone else’s questions too.", spec: "NO BOOKING · VIDEO CALL · OPEN FOR AN HOUR" },
                 { icon: "user" as IconName, name: "1:1 conversation", when: "When it’s specific to your business", body: "Pick an open time for a private 30–45 minute conversation. Share your question in advance so the host comes prepared.", spec: "JUST YOU · 30–45 MIN" },
                 { icon: "users" as IconName, name: "Small group", when: "When others share the problem", body: "Reserve one of a few seats at a table of merchants with related questions. You learn from the host and from each other.", spec: "4–8 SEATS · 45–60 MIN" },
               ].map((f) => (

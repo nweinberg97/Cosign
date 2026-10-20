@@ -1,14 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { FORMAT_HINT } from "@/lib/constants";
-import { activeBookings, openSlots, resourcesForSession, seatsLeft, sessionPhase, userBooking } from "@/lib/selectors";
+import { activeBookings, openSlots, seatsLeft, sessionPhase, userBooking } from "@/lib/selectors";
 import { useStore } from "@/lib/store";
 import { fmtDay, fmtLongDay, fmtRange, fmtTime, relativeDay } from "@/lib/time";
 import type { Session } from "@/lib/types";
-import { Avatar } from "../ui/Avatar";
 import { LiveBadge } from "../ui/Badge";
 import { Button, ButtonLink } from "../ui/Button";
 import { ConfirmDialog, Dialog } from "../ui/Dialog";
@@ -16,7 +14,7 @@ import { TextArea } from "../ui/Field";
 import { Icon } from "../ui/Icon";
 import { useToast } from "../ui/Toast";
 import { FeedbackForm } from "./FeedbackForm";
-import { SessionRoom } from "./SessionRoom";
+import { VirtualRoom } from "./VirtualRoom";
 
 function CapacityMeter({ taken, capacity }: { taken: number; capacity: number }) {
   const pct = Math.min(100, Math.round((taken / capacity) * 100));
@@ -98,7 +96,7 @@ export function BookingPanel({ session }: { session: Session }) {
           )}
         </div>
         {mine.status === "joined" ? (
-          <Button className="w-full" icon="arrowRight" onClick={() => setRoomOpen(true)}>
+          <Button className="w-full" icon="video" onClick={() => setRoomOpen(true)}>
             Go back in
           </Button>
         ) : (
@@ -137,17 +135,17 @@ export function BookingPanel({ session }: { session: Session }) {
           <Button
             size="lg"
             className="w-full"
-            icon="arrowRight"
+            icon="video"
             disabled={left === 0}
             onClick={() => {
               const r = actions.joinDropIn(session.id);
               if (r.ok) {
                 setRoomOpen(true);
-                toast(`You walked into ${host?.name.split(" ")[0]}'s office hours.`);
+                toast(`You joined ${host?.name.split(" ")[0]}'s office hours.`);
               } else toast(r.error, "error");
             }}
           >
-            {left === 0 ? "Every chair is taken" : "Walk in"}
+            {left === 0 ? "Every chair is taken" : "Join the call"}
           </Button>
           {left === 0 && <p className="text-[12.5px] text-muted">Someone usually steps out within a few minutes. Try again soon.</p>}
         </div>
@@ -197,7 +195,7 @@ export function BookingPanel({ session }: { session: Session }) {
       <p className="mb-3 text-[13px] text-muted">{FORMAT_HINT[session.format]}</p>
       {body}
       {bookOpen && <BookDialog session={session} onClose={() => setBookOpen(false)} />}
-      {roomOpen && mine?.status === "joined" && <DropInRoom session={session} onClose={() => setRoomOpen(false)} onLeave={() => setConfirmCancel(true)} />}
+      {roomOpen && mine?.status === "joined" && <VirtualRoom session={session} onClose={() => setRoomOpen(false)} onLeave={() => setConfirmCancel(true)} />}
     </div>
   );
 }
@@ -337,116 +335,6 @@ function BookDialog({ session, onClose }: { session: Session; onClose: () => voi
             {error}
           </p>
         )}
-      </div>
-    </Dialog>
-  );
-}
-
-function DropInRoom({ session, onClose, onLeave }: { session: Session; onClose: () => void; onLeave: () => void }) {
-  const { state, me } = useStore();
-  const host = state.users[session.hostId];
-  const people = activeBookings(state, session.id)
-    .map((b) => state.users[b.userId])
-    .filter(Boolean);
-  const related = resourcesForSession(session.id)[0];
-  const [draft, setDraft] = useState("");
-  const [queued, setQueued] = useState<string[]>([]);
-  const myBubble = queued.length ? [{ userId: me.id, text: queued[queued.length - 1] }] : [];
-
-  return (
-    <Dialog
-      open
-      onClose={onClose}
-      size="lg"
-      title={`${host?.name.split(" ")[0]}’s office hours`}
-      description={<span>{session.title} · a simulated room, no audio or video in this demo</span>}
-      footer={
-        <>
-          <Button variant="danger" onClick={onLeave}>
-            Step out
-          </Button>
-          <Button variant="secondary" onClick={onClose}>
-            Back to the session page
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-5">
-        <SessionRoom
-          session={session}
-          size="lg"
-          showChatter
-          extraBubbles={myBubble}
-          extraBoardLines={queued.map((q, i) => `${i + 3}. You — ${q}`)}
-        />
-        <div className="grid gap-5 sm:grid-cols-[1.3fr_1fr]">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (draft.trim().length < 3) return;
-              setQueued((q) => [...q, draft.trim()]);
-              setDraft("");
-            }}
-          >
-            <label htmlFor="room-q" className="text-sm font-medium text-ink">
-              Raise your hand for {host?.name.split(" ")[0]}
-            </label>
-            <p className="mt-0.5 text-[12.5px] text-muted">Your question goes on the whiteboard queue, like signing the list on an office door.</p>
-            <div className="mt-2 flex gap-2">
-              <input
-                id="room-q"
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                placeholder="e.g. Could you look at my checkout?"
-                className="h-10 min-w-0 flex-1 rounded-[var(--radius-control)] border border-line-strong px-3 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30"
-              />
-              <Button type="submit" icon="hand" disabled={draft.trim().length < 3}>
-                Raise
-              </Button>
-            </div>
-            {queued.length > 0 && (
-              <ul className="mt-3 space-y-1.5" aria-live="polite">
-                {queued.map((q, i) => (
-                  <li key={i} className="flex items-start gap-2 rounded-lg bg-brand-wash px-3 py-2 text-[13px] text-ink-2">
-                    <Icon name="check" size={14} className="mt-0.5 text-brand" />
-                    <span>
-                      <span className="font-medium">On the whiteboard (#{i + 3}):</span> {q}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </form>
-          <div>
-            <p className="font-mono text-[11px] font-semibold tracking-[0.1em] text-muted uppercase">
-              Around the table · {people.length + 1} of {session.capacity + 1}
-            </p>
-            <ul className="mt-2 space-y-1.5">
-              {host && (
-                <li className="flex items-center gap-2 text-sm">
-                  <Avatar user={host} size="xs" />
-                  <span className="font-medium">{host.name}</span>
-                  <span className="font-mono text-[10px] text-brand-ink">HOST</span>
-                </li>
-              )}
-              {people.map((u) => (
-                <li key={u.id} className="flex items-center gap-2 text-sm">
-                  <Avatar user={u} size="xs" />
-                  <span className={u.id === me.id ? "font-semibold" : ""}>{u.id === me.id ? `${u.name} (you)` : u.name}</span>
-                  <span className="truncate text-[12px] text-muted">{u.business}</span>
-                </li>
-              ))}
-            </ul>
-            {related && (
-              <p className="mt-4 text-[12.5px] leading-5 text-muted">
-                On the shelf:{" "}
-                <Link href={`/resources/${related.id}`} className="font-medium text-brand-ink underline-offset-4 hover:underline" onClick={onClose}>
-                  {related.title}
-                </Link>
-              </p>
-            )}
-          </div>
-        </div>
       </div>
     </Dialog>
   );

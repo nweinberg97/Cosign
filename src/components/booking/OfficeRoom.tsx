@@ -1,7 +1,7 @@
 "use client";
 
 import type { User } from "@/lib/types";
-import { avatarColors, initials } from "../ui/Avatar";
+import { PhotoOrInitials } from "../ui/Avatar";
 
 /**
  * A top-down floor plan of a host's office: walls, a door that's open or
@@ -164,13 +164,5 @@ function Seat({
 }
 
 function SeatFace({ user }: { user: User }) {
-  const [bg, fg] = avatarColors(user);
-  return (
-    <span
-      className="flex h-[82%] w-[82%] items-center justify-center rounded-full font-semibold"
-      style={{ backgroundColor: bg, color: fg, fontSize: "clamp(7px, 2.2cqw, 13px)" }}
-    >
-      {initials(user.name)}
-    </span>
-  );
+  return <PhotoOrInitials user={user} px={44} className="h-[82%] w-[82%] rounded-full" style={{ fontSize: "clamp(7px, 2.2cqw, 13px)" }} />;
 }

@@ -10,11 +10,11 @@ Cosign is an independent product concept and working prototype: a curated networ
 
 ### Office Hours that feel like office hours
 
-Like a professor's office hours: when the door is open, you walk in, pull up a chair, and put your question on the whiteboard.
+Like a professor's office hours, online. Browse a hallway of offices to see whose door is open, then hop into the video call, raise your hand, and chat. The host can share their screen to work through someone's store live.
 
 ![The hallway of open office hours](docs/screenshots/office-hours.png)
 
-![Inside an office: the host at the table, chairs, and the whiteboard queue](docs/screenshots/office-room.png)
+![Inside open office hours: video tiles, the host sharing a storefront, chat, and the raise-hand queue](docs/screenshots/office-call.png)
 
 ### Not another forum
 
@@ -41,7 +41,7 @@ The app opens on a landing page that explains the concept, how it differs from t
 
 1. **Enter as Maya**, a newer skincare merchant, and personalize (stage, goal, topics). Home re-ranks around your answers and explains every recommendation.
 2. **Join a community** (e.g. Vancouver Consumer Brands). Members and discussions unlock — membership is private by design.
-3. **Office Hours** → walk into Sam's open office (the door is open), raise your hand, and see your question land on the whiteboard. Then open *Conversion quick wins for new stores* → **Reserve a seat**; it appears on Home and in **My bookings**.
+3. **Office Hours** → Sam's door is open: join the call, raise your hand, and send a chat message. Then open *Conversion quick wins for new stores* → **Reserve a seat**; it appears on Home and in **My bookings**.
 4. Book a **1:1** by picking a time slot, and try the **fully booked** pricing session.
 5. **Questions** → ask something, reply, mark an answer helpful, and jump from the question to relevant Office Hours.
 6. In **Demo controls** (sidebar, or *More* on mobile) **switch to Jordan**, the host. Review attendees and advance questions, then **Offer Office Hours** and see it in discovery immediately.
@@ -62,7 +62,7 @@ The app opens on a landing page that explains the concept, how it differs from t
 - **Anyone can host.** Maya can offer a session too (reciprocity), and creating one makes her a host.
 - **Client-rendered app.** State is browser-local, so pages render after hydration with a brief loading state. A production version would server-render with real data.
 - **No icon or UI dependencies.** A small in-repo icon set and components keep the bundle lean.
-- **Initial-letter avatars** instead of photography, so no real people or stock portraits are implied.
+- **Stock photography.** Headshots and product photos are Unsplash images of models (credited on the About page), loaded from Unsplash's CDN with initials as the fallback. The README screenshots were captured offline, so they show the initials.
 
 ## The live demo (GitHub Pages)
 

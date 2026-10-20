@@ -5,6 +5,41 @@ import { ButtonLink } from "../ui/Button";
 import { Icon, type IconName } from "../ui/Icon";
 import { Card, PageHeader } from "../ui/Layout";
 import { usePageTitle } from "../ui/usePageTitle";
+import { COVERS, PORTRAITS } from "@/lib/photos";
+import { useStore } from "@/lib/store";
+
+function PhotoCredits() {
+  const { state } = useStore();
+  const rows = Object.keys(PORTRAITS).map((id) => ({ id, name: state.users[id]?.name ?? id, portrait: PORTRAITS[id], cover: COVERS[id] }));
+  return (
+    <section className="mt-10" aria-labelledby="credits">
+      <h2 id="credits" className="font-display text-[22px] font-bold">
+        Photo credits
+      </h2>
+      <p className="mt-1 text-sm text-muted">
+        Headshots and product photos are stock images from Unsplash, used under the Unsplash License. The people pictured are models, not the fictional merchants they illustrate.
+      </p>
+      <ul className="mt-4 grid gap-x-6 gap-y-2 text-[13.5px] sm:grid-cols-2">
+        {rows.map((r) => (
+          <li key={r.id} className="text-ink-2">
+            <span className="font-medium text-ink">{r.name}:</span>{" "}
+            <a href={r.portrait.page} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">
+              portrait by {r.portrait.photographer}
+            </a>
+            {r.cover && (
+              <>
+                {" · "}
+                <a href={r.cover.page} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">
+                  product photo by {r.cover.photographer}
+                </a>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 const LAYERS: { icon: IconName; title: string; body: string }[] = [
   { icon: "globe", title: "Existing network", body: "A commerce platform already sits at the center of a large merchant ecosystem. With consent, a production version could use opt-in context to suggest the right circles and people." },
@@ -134,6 +169,8 @@ export function AboutView() {
           ))}
         </ul>
       </section>
+
+      <PhotoCredits />
 
       <section className="mt-10 rounded-[var(--radius-card)] border border-line-strong bg-surface p-5 sm:p-6" aria-label="Disclosure">
         <DisclosureText />

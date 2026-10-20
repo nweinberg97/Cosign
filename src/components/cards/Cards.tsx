@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { communityMemberCount, getCommunity, isMember, mostHelpfulReplyId, repliesFor, sessionsForCommunity, upcomingSessions } from "@/lib/selectors";
+import { COVERS, sized } from "@/lib/photos";
 import { useStore } from "@/lib/store";
 import { fmtDay, fmtRange, timeAgo } from "@/lib/time";
 import type { Community, CommunityEvent, Question, Resource, User } from "@/lib/types";
@@ -103,13 +104,29 @@ export function CommunityCard({ community, reason }: { community: Community; rea
   );
 }
 
+function CoverStrip({ userId }: { userId: string }) {
+  const photo = COVERS[userId];
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className="-mx-4 -mt-4 mb-3 h-20 bg-forest-2" aria-hidden="true">
+      {photo && !failed && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={sized(photo, 600, 160, false)} alt="" loading="lazy" onError={() => setFailed(true)} className="h-full w-full object-cover" />
+      )}
+    </div>
+  );
+}
+
 export function ExpertCard({ user, compact = false }: { user: User; compact?: boolean }) {
   const { state } = useStore();
   const sessions = upcomingSessions(state).filter((s) => s.hostId === user.id);
   return (
-    <article className="relative flex flex-col rounded-[var(--radius-card)] border border-line bg-surface p-4 shadow-[var(--shadow-card)] transition-shadow hover:shadow-[var(--shadow-raised)]">
+    <article className="relative flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface p-4 shadow-[var(--shadow-card)] transition-shadow hover:shadow-[var(--shadow-raised)]">
+      <CoverStrip userId={user.id} />
       <div className="flex items-start gap-3">
-        <Avatar user={user} size="md" />
+        <span className="relative z-10 -mt-9 inline-flex rounded-full bg-surface p-0.5">
+          <Avatar user={user} size="lg" />
+        </span>
         <div className="min-w-0">
           <h3 className="text-[15px] font-semibold text-ink">
             <Link href={`/members/${user.id}`} className="after:absolute after:inset-0 after:rounded-[var(--radius-card)]">

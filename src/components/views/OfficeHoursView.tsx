@@ -116,7 +116,7 @@ function OpenOffices({ open, soon }: { open: Session[]; soon: Session[] }) {
         {open.length ? "Office hours with the door open" : "No doors open right now"}
       </h2>
       <p className="mt-1.5 max-w-[42rem] text-[15px] leading-6 text-on-forest-muted">
-        Like a professor&apos;s office hours: when the door is open, walk in, pull up a chair, and join the conversation. No booking, and you can step out anytime.
+        Like a professor&apos;s office hours, but online. When the door is open, hop into the video call, raise your hand, and learn from everyone else&apos;s questions too. No booking, and you can step out anytime.
       </p>
 
       <div className="mt-6 space-y-5">

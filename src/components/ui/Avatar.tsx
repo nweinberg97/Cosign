@@ -1,3 +1,8 @@
+"use client";
+
+import { useState } from "react";
+import type { CSSProperties } from "react";
+import { PORTRAITS, sized } from "@/lib/photos";
 import type { User } from "@/lib/types";
 
 // Warm, muted tones keep illustrated avatars consistent without photography.
@@ -32,23 +37,40 @@ const SIZES = {
   xl: "h-20 w-20 text-2xl",
 };
 
-export function Avatar({
-  user,
-  size = "md",
-  ring = false,
-}: {
-  user: Pick<User, "name" | "avatarTone">;
-  size?: keyof typeof SIZES;
-  ring?: boolean;
-}) {
-  const [bg, fg] = TONES[Math.abs(user.avatarTone) % TONES.length];
+const PX = { xs: 48, sm: 64, md: 80, lg: 112, xl: 160 };
+
+/** A stock headshot where one exists, with initials as the fallback. */
+export function PhotoOrInitials({ user, px, className = "", style }: { user: AvatarUser; px: number; className?: string; style?: CSSProperties }) {
+  const photo = user.id ? PORTRAITS[user.id] : undefined;
+  const [failed, setFailed] = useState(false);
+  const [bg, fg] = avatarColors(user);
+  if (photo && !failed) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={sized(photo, px * 2)}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        onError={() => setFailed(true)}
+        className={`object-cover ${className}`}
+        style={{ backgroundColor: bg, ...style }}
+      />
+    );
+  }
   return (
-    <span
-      aria-hidden="true"
-      className={`inline-flex shrink-0 items-center justify-center rounded-full font-semibold tracking-wide ${SIZES[size]} ${ring ? "ring-2 ring-surface" : ""}`}
-      style={{ backgroundColor: bg, color: fg }}
-    >
+    <span className={`inline-flex items-center justify-center font-semibold tracking-wide ${className}`} style={{ backgroundColor: bg, color: fg, ...style }}>
       {initials(user.name)}
+    </span>
+  );
+}
+
+type AvatarUser = Pick<User, "name" | "avatarTone"> & { id?: string };
+
+export function Avatar({ user, size = "md", ring = false }: { user: AvatarUser; size?: keyof typeof SIZES; ring?: boolean }) {
+  return (
+    <span aria-hidden="true" className={`inline-flex shrink-0 overflow-hidden rounded-full ${SIZES[size]} ${ring ? "ring-2 ring-surface" : ""}`}>
+      <PhotoOrInitials user={user} px={PX[size]} className="h-full w-full rounded-full" />
     </span>
   );
 }

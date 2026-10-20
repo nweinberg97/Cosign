@@ -9,6 +9,7 @@ import { hostedSessions, isMember, questionsSorted, sessionPhase } from "@/lib/s
 import { type ProfileErrors, type ProfilePatch, useStore, validateProfile } from "@/lib/store";
 import type { SocialLinks, User } from "@/lib/types";
 import { displayHost, safeUrl } from "@/lib/url";
+import { COVERS, sized } from "@/lib/photos";
 import { CommunityGlyph, QuestionCard } from "../cards/Cards";
 import { SessionCard } from "../cards/SessionCard";
 import { useShell } from "../shell/AppShell";
@@ -54,11 +55,29 @@ function ProfileLinks({ links }: { links: SocialLinks }) {
   );
 }
 
+function CoverImage({ userId, business }: { userId: string; business: string }) {
+  const photo = COVERS[userId];
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className="relative h-36 bg-forest sm:h-44">
+      {photo && !failed && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={sized(photo, 1200, 360, false)} alt={`Product photo representing ${business}`} onError={() => setFailed(true)} className="h-full w-full object-cover" />
+      )}
+      <span className="absolute right-3 bottom-2 rounded-[4px] bg-ink/60 px-1.5 py-0.5 font-mono text-[10px] text-white">{business.toUpperCase()}</span>
+    </div>
+  );
+}
+
 export function ProfileHeader({ user, actions }: { user: User; actions?: ReactNode }) {
   return (
-    <header className="rounded-[18px] border border-line bg-surface p-5 shadow-[var(--shadow-card)] sm:p-7">
+    <header className="overflow-hidden rounded-[18px] border border-line bg-surface shadow-[var(--shadow-card)]">
+      <CoverImage userId={user.id} business={user.business} />
+      <div className="px-5 pb-5 sm:px-7 sm:pb-7">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-        <Avatar user={user} size="xl" />
+        <span className="relative z-10 -mt-12 inline-flex rounded-full bg-surface p-1 sm:-mt-14">
+          <Avatar user={user} size="xl" />
+        </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="font-display text-[28px] leading-tight font-semibold">{user.name}</h1>
@@ -82,7 +101,10 @@ export function ProfileHeader({ user, actions }: { user: User; actions?: ReactNo
         </div>
         {actions && <div className="flex shrink-0 gap-2">{actions}</div>}
       </div>
-      <p className="mt-5 text-[12px] text-muted">Fictional profile. Business details and figures are illustrative.</p>
+      <p className="mt-5 text-[12px] text-muted">
+        Fictional profile. Business details and figures are illustrative. Photos are Unsplash stock images of models, not the person described.
+      </p>
+      </div>
     </header>
   );
 }

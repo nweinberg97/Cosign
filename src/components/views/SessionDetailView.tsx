@@ -48,7 +48,7 @@ export function SessionDetailView({ id }: { id: string }) {
   const phase = sessionPhase(session);
 
   const mobileCta =
-    status.kind === "live" ? "Walk in" : status.kind === "booked" || status.kind === "joined" ? "View booking" : status.kind === "open" ? (session.format === "group" ? "Reserve a seat" : "Choose a time") : status.kind === "hosting" ? "Manage" : "Details";
+    status.kind === "live" ? "Join the call" : status.kind === "booked" || status.kind === "joined" ? "View booking" : status.kind === "open" ? (session.format === "group" ? "Reserve a seat" : "Choose a time") : status.kind === "hosting" ? "Manage" : "Details";
 
   return (
     <div className="animate-in pb-20 lg:pb-0">

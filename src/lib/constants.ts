@@ -76,7 +76,7 @@ export const FORMAT_LABEL: Record<SessionFormat, string> = {
 };
 
 export const FORMAT_HINT: Record<SessionFormat, string> = {
-  "drop-in": "The door's open during the window. Walk in, pull up a chair, and ask your question. No booking.",
+  "drop-in": "Open-door hours on a video call. Hop in while the door is open, say hi, and raise your hand. No booking.",
   "one-to-one": "Pick a time for a private conversation.",
   group: "Reserve a seat and bring a question to a small table.",
 };
@@ -84,7 +84,15 @@ export const FORMAT_HINT: Record<SessionFormat, string> = {
 export const DURATIONS = [20, 30, 45, 60, 90];
 
 /** Illustrative "what's happening in the room" details for seeded drop-ins. */
-export const ROOM_SCENES: Record<string, { board: string; lines: string[]; bubbles: { userId: string; text: string }[] }> = {
+export interface RoomScene {
+  board: string;
+  lines: string[];
+  bubbles: { userId: string; text: string }[];
+  chat: { userId: string; text: string; time: string }[];
+  share?: { url: string; product: string; price: string; ownerId: string; note: string };
+}
+
+export const ROOM_SCENES: Record<string, RoomScene> = {
   "s-storefront-teardown": {
     board: "Now: Hana’s product page",
     lines: ["Next: Theo — checkout", "Then: shipping banner?"],
@@ -92,7 +100,21 @@ export const ROOM_SCENES: Record<string, { board: string; lines: string[]; bubbl
       { userId: "u-sam", text: "Let’s move shipping info up here." },
       { userId: "u-hana", text: "Oh, that’s why people bail!" },
     ],
+    chat: [
+      { userId: "u-sam", text: "Welcome in, everyone. Pulling up Hana’s product page first.", time: "10:04" },
+      { userId: "u-hana", text: "Thank you! Mostly worried that the shipping cost surprises people.", time: "10:06" },
+      { userId: "u-theo", text: "Same question for my checkout after this, if there’s time.", time: "10:09" },
+      { userId: "u-amara", text: "Putting the returns line under the price helped us a lot.", time: "10:14" },
+      { userId: "u-sam", text: "Good call, Amara. Hana, try shipping info right under Add to cart.", time: "10:21" },
+    ],
+    share: {
+      url: "kumo-jewelry.example/products/arc-chain-bracelet",
+      product: "Arc chain bracelet · sterling silver",
+      price: "$95",
+      ownerId: "u-hana",
+      note: "Shipping info goes here",
+    },
   },
-  "s-ai-ops-clinic": { board: "Bring one workflow", lines: ["Support replies", "Product copy"], bubbles: [] },
-  "s-acquisition-math": { board: "Payback = CAC ÷ margin", lines: ["Bring your numbers"], bubbles: [] },
+  "s-ai-ops-clinic": { board: "Bring one workflow", lines: ["Support replies", "Product copy"], bubbles: [], chat: [] },
+  "s-acquisition-math": { board: "Payback = CAC ÷ margin", lines: ["Bring your numbers"], bubbles: [], chat: [] },
 };
