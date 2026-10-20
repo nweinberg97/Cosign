@@ -97,6 +97,7 @@ export function validateProfile(p: ProfilePatch): ProfileErrors {
 
 interface Actions {
   enter: (userId: string) => void;
+  showLanding: () => void;
   switchPersona: (userId: string) => void;
   savePrefs: (prefs: Omit<Prefs, "completed">, completed?: boolean) => void;
   joinCommunity: (id: string) => Result;
@@ -191,6 +192,8 @@ const actions: Actions = (() => {
   return {
     enter: (userId) =>
       void run((s) => ({ next: { ...s, entered: true, currentUserId: userId }, result: { ok: true } })),
+
+    showLanding: () => void run((s) => ({ next: { ...s, entered: false }, result: { ok: true } })),
 
     switchPersona: (userId) =>
       void run((s) => (s.users[userId] ? { next: { ...s, currentUserId: userId }, result: { ok: true } } : { result: fail("Unknown persona.") })),

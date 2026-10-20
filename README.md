@@ -19,6 +19,8 @@ No environment variables, accounts, or services are needed. Everything runs in t
 
 ## What to try (about 5 minutes)
 
+The app opens on a landing page that explains the concept, how it differs from typical community platforms, and the strategy behind it. You can return to it anytime from **Demo controls → View the landing page**.
+
 1. **Enter as Maya**, a newer skincare merchant, and personalize (stage, goal, topics). Home re-ranks around your answers and explains every recommendation.
 2. **Join a community** (e.g. Vancouver Consumer Brands). Members and discussions unlock — membership is private by design.
 3. **Office Hours** → open *Conversion quick wins for new stores* → **Reserve a seat** with a question for the host. It appears on Home and in **My bookings**.

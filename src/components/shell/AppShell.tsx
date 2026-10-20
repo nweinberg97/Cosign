@@ -127,6 +127,17 @@ function DemoControls({ onDone, dark = false }: { onDone?: () => void; dark?: bo
       )}
       <button
         type="button"
+        onClick={() => {
+          onDone?.();
+          actions.showLanding();
+        }}
+        className={`mt-2 flex items-center gap-1.5 text-[12.5px] font-medium underline-offset-4 hover:underline ${dark ? "text-on-forest" : "text-ink-2"}`}
+      >
+        <Icon name="home" size={13} />
+        View the landing page
+      </button>
+      <button
+        type="button"
         onClick={() => setConfirmReset(true)}
         className={`mt-2 inline-flex items-center gap-1.5 text-[12.5px] font-medium underline-offset-4 hover:underline ${dark ? "text-on-forest hover:text-[#ffb4a6]" : "text-ink-2 hover:text-danger"}`}
       >
