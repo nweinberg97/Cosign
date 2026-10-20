@@ -21,9 +21,9 @@ export function Badge({ tone = "neutral", icon, children, className = "" }: { to
   );
 }
 
-export function LiveBadge({ label = "Live now" }: { label?: string }) {
+export function LiveBadge({ label = "Door open" }: { label?: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-[4px] bg-live px-1.5 py-0.5 font-mono text-[10.5px] font-semibold tracking-[0.06em] uppercase leading-4 text-white">
+    <span className="inline-flex items-center gap-1.5 rounded-[4px] bg-brand px-1.5 py-0.5 font-mono text-[10.5px] font-semibold tracking-[0.06em] uppercase leading-4 text-white">
       <span className="live-dot h-1.5 w-1.5 rounded-full bg-white" aria-hidden="true" />
       {label}
     </span>

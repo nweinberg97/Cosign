@@ -45,7 +45,7 @@ export function HomeView() {
   let next: { title: string; body: string; href?: string; cta: string; onClick?: () => void; live?: boolean };
   if (liveRec) {
     const host = state.users[liveRec.item.hostId];
-    next = { title: `${host.name.split(" ")[0]}'s "${liveRec.item.title}" is live now`, body: liveRec.reason, href: `/office-hours/${liveRec.item.id}`, cta: "Drop in", live: true };
+    next = { title: `${host.name.split(" ")[0]}’s door is open: ${liveRec.item.title}`, body: `${liveRec.reason} Walk in and pull up a chair, no booking needed.`, href: `/office-hours/${liveRec.item.id}`, cta: "Walk in", live: true };
   } else if (newReplies.length) {
     next = { title: `${newReplies.length} new ${newReplies.length === 1 ? "reply" : "replies"} on your question`, body: newReplies[0].question.title, href: `/questions/${newReplies[0].question.id}`, cta: "Read replies" };
   } else if (upcoming.length) {
@@ -64,7 +64,7 @@ export function HomeView() {
           <p className="font-mono text-[11.5px] tracking-[0.12em] text-brand-ink uppercase">Tue · Oct 20 · 10:30 AM PT</p>
           <h1 className="font-display mt-2 text-[36px] leading-[1.02] font-bold sm:text-[46px]">Good morning, {firstName}.</h1>
           <p className="mt-2 max-w-xl text-[15px] leading-6 text-muted">
-            Your network of merchants who&apos;ve been there. Here&apos;s what&apos;s worth your time today.
+            Cosign connects you with merchants who&apos;ve already solved what you&apos;re working on. Here&apos;s what&apos;s open for you today.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -94,7 +94,7 @@ export function HomeView() {
         <div className="relative overflow-hidden rounded-[16px] bg-forest p-5 text-on-forest sm:p-7">
           <SignatureStroke className="pointer-events-none absolute -right-6 bottom-4 h-14 w-[46%] opacity-60" animate={false} />
           <p id="next-step" className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-mint uppercase">
-            Suggested next step {next.live && <LiveBadge label="Live" />}
+            Suggested next step {next.live && <LiveBadge label="Open now" />}
           </p>
           <p className="font-display mt-3 max-w-2xl text-[24px] leading-tight font-bold sm:text-[30px]">{next.title}</p>
           <p className="mt-2 max-w-xl text-[15px] leading-6 text-on-forest-muted">{next.body}</p>

@@ -2,10 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { activeBookings, hostedSessions, sessionPhase } from "@/lib/selectors";
+import { activeBookings, getSession, hostedSessions, sessionPhase } from "@/lib/selectors";
 import { useStore } from "@/lib/store";
 import type { User } from "@/lib/types";
+import { SessionRoom } from "../booking/SessionRoom";
 import { Avatar } from "../ui/Avatar";
+import { LiveBadge } from "../ui/Badge";
 import { Icon, type IconName } from "../ui/Icon";
 import { BrandMark, SignatureStroke } from "./Brand";
 import { DisclosureText, PrivacyNote } from "./Disclosure";
@@ -109,7 +111,7 @@ const PROBLEMS: { icon: IconName; title: string; body: string }[] = [
 
 const COMPARISON: { row: string; typical: string; cosign: string }[] = [
   { row: "Who you meet", typical: "Whoever happened to join", cosign: "Merchants matched to your stage, niche, city, and goal" },
-  { row: "How you get help", typical: "Post, scroll, and hope someone replies", cosign: "Book time with a merchant who has solved your exact problem" },
+  { row: "How you get help", typical: "Post, scroll, and hope someone replies", cosign: "Walk into open office hours, or book time with someone who solved your exact problem" },
   { row: "Group size", typical: "Thousands of members in one feed", cosign: "Small, curated circles with a clear purpose" },
   { row: "Who counts as an expert", typical: "Whoever posts most or has the most followers", cosign: "Working merchants, with their real experience shown and no follower counts" },
   { row: "Where it lives", typical: "A separate app, disconnected from your store", cosign: "Inside the commerce journey you already use" },
@@ -148,7 +150,7 @@ export function Welcome({ onEnter }: { onEnter: (personaId: string) => void }) {
   const lena = state.users["u-lena"];
   const hana = state.users["u-hana"];
   const inRoom = activeBookings(state, "s-storefront-teardown").length;
-  const emailTaken = activeBookings(state, "s-email-flows").length;
+  const teardown = getSession(state, "s-storefront-teardown");
   const jordanUpcoming = hostedSessions(state, "u-jordan").filter((s) => !s.cancelled && sessionPhase(s) !== "ended");
   const jordanSeats = jordanUpcoming.reduce((n, s) => n + activeBookings(state, s.id).length, 0);
   const jordanQs = jordanUpcoming.reduce((n, s) => n + activeBookings(state, s.id).filter((b) => b.question).length, 0);
@@ -215,33 +217,18 @@ export function Welcome({ onEnter }: { onEnter: (personaId: string) => void }) {
               <p className="mt-6 font-mono text-[11px] tracking-[0.08em] text-on-forest-muted uppercase">Independent concept · not affiliated with Shopify · all data fictional</p>
             </div>
 
-            <div className="relative min-h-[420px] min-w-0" aria-label="Example Office Hours sessions from the demo" role="img">
+            <div className="relative min-w-0 lg:pt-4">
+              <div className="rounded-[16px] bg-surface p-3 pb-10 text-ink shadow-[0_30px_60px_-28px_rgb(0_0_0/0.7)] sm:p-4 sm:pb-12">
+                <div className="mb-3 flex flex-wrap items-center gap-2 px-1">
+                  <LiveBadge label="Door open" />
+                  <span className="text-[14px] font-semibold">{sam.name.split(" ")[0]}’s office hours</span>
+                  <span className="text-[13px] text-muted">· Storefront teardown</span>
+                  <span className="ml-auto font-mono text-[11px] text-muted">{inRoom}/12 CHAIRS</span>
+                </div>
+                {teardown && <SessionRoom session={teardown} size="lg" showChatter />}
+              </div>
               <MiniTicket
-                className="absolute top-0 right-0 left-6 rotate-[2deg] sm:left-16"
-                day="Thu"
-                num="22"
-                month="OCT"
-                time="9AM"
-                label="Small group · Retention"
-                title="Email flows that earn repeat orders"
-                host={jordan}
-                meta={`${emailTaken}/6 SEATS`}
-                dots={{ taken: emailTaken, cap: 6 }}
-              />
-              <MiniTicket
-                className="absolute top-[150px] right-8 left-0 -rotate-[1.5deg] sm:right-14"
-                day="Today"
-                num="20"
-                month="OCT"
-                time="10AM"
-                live
-                label="Live now · Drop-in"
-                title="Storefront teardown hour"
-                host={sam}
-                meta={`${inRoom}/12 IN THE ROOM · NO BOOKING`}
-              />
-              <MiniTicket
-                className="absolute top-[300px] right-0 left-10 rotate-[1deg] sm:left-24"
+                className="relative z-10 mx-auto -mt-6 w-[88%] rotate-[-1.5deg] sm:-mt-8 sm:ml-auto sm:mr-[-12px] sm:w-[72%]"
                 day="Wed"
                 num="21"
                 month="OCT"
@@ -304,7 +291,7 @@ export function Welcome({ onEnter }: { onEnter: (personaId: string) => void }) {
                   { t: "Tells Cosign about her business", b: "Stage, niche, city, goal, and topics. Thirty seconds, and every recommendation from then on says why it was chosen.", tag: "Personalize" },
                   { t: "Joins circles that fit", b: "First 100 Orders for founders in their first year, and Vancouver Consumer Brands for local founders. Small, private, and curated.", tag: "Communities" },
                   { t: "Asks one specific question", b: "“Add-to-cart looks fine but few people finish checkout. Where do I look first?” Two merchants who have been there reply by morning.", tag: "Questions" },
-                  { t: "Drops into a live session", b: `${sam.name}, who has audited 100+ storefronts, is running a teardown right now. ${maya.name.split(" ")[0]} joins and raises her hand.`, tag: "Office Hours" },
+                  { t: "Walks into open office hours", b: `${sam.name}, who has audited 100+ storefronts, has the door open. ${maya.name.split(" ")[0]} pulls up a chair, puts her question on the whiteboard, and listens while Sam works through Hana’s store first.`, tag: "Office Hours" },
                   { t: "Leaves with a next step", b: "“Move shipping costs onto the product page this week.” She logs it, and cosigns the answer that pointed her there.", tag: "Progress" },
                 ].map((s, i) => (
                   <li key={s.t} className="relative">
@@ -326,7 +313,7 @@ export function Welcome({ onEnter }: { onEnter: (personaId: string) => void }) {
             <SectionTitle id="formats-title">Three ways to get time with someone who’s done it.</SectionTitle>
             <div className="mt-12 grid gap-5 md:grid-cols-3">
               {[
-                { icon: "radio" as IconName, name: "Drop-in", when: "When you’re stuck right now", body: "An open room during a scheduled window. No booking: join while it’s live, ask your question, and hear everyone else’s answers too.", spec: "UP TO 20 · LIVE WINDOW" },
+                { icon: "radio" as IconName, name: "Drop-in office hours", when: "When you’re stuck right now", body: "Like a professor’s office hours. When the door is open, walk in, pull up a chair, add your question to the whiteboard, and learn from everyone else’s too.", spec: "NO BOOKING · DOOR OPEN FOR AN HOUR" },
                 { icon: "user" as IconName, name: "1:1 conversation", when: "When it’s specific to your business", body: "Pick an open time for a private 30–45 minute conversation. Share your question in advance so the host comes prepared.", spec: "JUST YOU · 30–45 MIN" },
                 { icon: "users" as IconName, name: "Small group", when: "When others share the problem", body: "Reserve one of a few seats at a table of merchants with related questions. You learn from the host and from each other.", spec: "4–8 SEATS · 45–60 MIN" },
               ].map((f) => (
@@ -437,7 +424,7 @@ export function Welcome({ onEnter }: { onEnter: (personaId: string) => void }) {
               </div>
               <p className="mt-4 flex items-center gap-2 border-t border-line pt-4 text-[13.5px] text-ink-2">
                 <Icon name="ticket" size={16} className="text-brand" />
-                Talk it through live: <span className="font-semibold">Storefront teardown hour</span> is on now
+                Talk it through live: <span className="font-semibold">Sam’s door is open</span> right now
               </p>
             </div>
           </Wrap>
@@ -566,7 +553,7 @@ export function Welcome({ onEnter }: { onEnter: (personaId: string) => void }) {
               <ul className="mt-8 space-y-3">
                 {[
                   "Personalize, then see recommendations explain themselves",
-                  "Reserve a seat, pick a 1:1 time, or join the live drop-in",
+                  "Walk into open office hours, reserve a seat, or pick a 1:1 time",
                   "Ask a question and jump straight to a relevant session",
                   "Switch to Jordan to see attendees and publish a session",
                 ].map((x) => (

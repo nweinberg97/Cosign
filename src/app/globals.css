@@ -30,6 +30,10 @@
   --color-on-forest-muted: #9cbcab;
   --color-mint: #86e3ae;
 
+  --color-floor: #f4eee4;
+  --color-wood: #d8b88d;
+  --color-wood-2: #bf9765;
+
   --color-live: #b5360b;
   --color-live-tint: #fde9df;
   --color-warn: #865700;
@@ -112,6 +116,14 @@ h1, h2, h3 {
 .ticket-on-forest .ticket-stub::after { background: var(--color-forest); border-color: var(--color-forest); }
 .ticket-stub::before { top: -9px; clip-path: inset(50% 0 0 0); }
 .ticket-stub::after { bottom: -9px; clip-path: inset(0 0 50% 0); }
+
+/* Office floor plan: warm planks under a forest-green wall. */
+.office-floor {
+  background-color: var(--color-floor);
+  background-image:
+    repeating-linear-gradient(90deg, rgb(140 110 70 / 0.07) 0 1px, transparent 1px 11%),
+    repeating-linear-gradient(0deg, rgb(140 110 70 / 0.05) 0 1px, transparent 1px 25%);
+}
 
 /* Hand-drawn signature stroke that writes itself once on load. */
 .signature-path {

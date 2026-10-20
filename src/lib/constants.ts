@@ -76,9 +76,23 @@ export const FORMAT_LABEL: Record<SessionFormat, string> = {
 };
 
 export const FORMAT_HINT: Record<SessionFormat, string> = {
-  "drop-in": "Join live during the window. No booking needed.",
+  "drop-in": "The door's open during the window. Walk in, pull up a chair, and ask your question. No booking.",
   "one-to-one": "Pick a time for a private conversation.",
   group: "Reserve a seat and bring a question to a small table.",
 };
 
 export const DURATIONS = [20, 30, 45, 60, 90];
+
+/** Illustrative "what's happening in the room" details for seeded drop-ins. */
+export const ROOM_SCENES: Record<string, { board: string; lines: string[]; bubbles: { userId: string; text: string }[] }> = {
+  "s-storefront-teardown": {
+    board: "Now: Hana’s product page",
+    lines: ["Next: Theo — checkout", "Then: shipping banner?"],
+    bubbles: [
+      { userId: "u-sam", text: "Let’s move shipping info up here." },
+      { userId: "u-hana", text: "Oh, that’s why people bail!" },
+    ],
+  },
+  "s-ai-ops-clinic": { board: "Bring one workflow", lines: ["Support replies", "Product copy"], bubbles: [] },
+  "s-acquisition-math": { board: "Payback = CAC ÷ margin", lines: ["Bring your numbers"], bubbles: [] },
+};

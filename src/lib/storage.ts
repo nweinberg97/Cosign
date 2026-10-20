@@ -88,7 +88,8 @@ export function loadState(): { state: AppState; recovered: boolean } {
   if (!raw) return { state: createSeedState(), recovered: false };
   try {
     const parsed: unknown = JSON.parse(raw);
-    if (isValidState(parsed)) return { state: parsed, recovered: false };
+    // Each new visit starts on the landing page; saved activity is kept.
+    if (isValidState(parsed)) return { state: { ...parsed, entered: enteredThisVisit() }, recovered: false };
   } catch {
     /* malformed JSON */
   }
@@ -96,7 +97,26 @@ export function loadState(): { state: AppState; recovered: boolean } {
   return { state: createSeedState(), recovered: true };
 }
 
+const SESSION_KEY = "cosign:entered";
+
+/** Whether the visitor already passed the landing page in this browser tab session. */
+function enteredThisVisit(): boolean {
+  try {
+    return typeof window !== "undefined" && window.sessionStorage.getItem(SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 export function saveState(state: AppState) {
+  try {
+    if (typeof window !== "undefined") {
+      if (state.entered) window.sessionStorage.setItem(SESSION_KEY, "1");
+      else window.sessionStorage.removeItem(SESSION_KEY);
+    }
+  } catch {
+    /* sessionStorage unavailable: the landing page will simply show again */
+  }
   try {
     write(STORAGE_KEY, JSON.stringify(state));
   } catch {

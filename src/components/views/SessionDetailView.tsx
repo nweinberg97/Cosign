@@ -6,6 +6,7 @@ import { activeBookings, getCommunity, getSession, isFull, nextStart, resourcesF
 import { useStore } from "@/lib/store";
 import { fmtLongDay, fmtRange } from "@/lib/time";
 import { BookingPanel } from "../booking/BookingPanel";
+import { SessionRoom } from "../booking/SessionRoom";
 import { CommunityGlyph, JoinButton, ResourceCard } from "../cards/Cards";
 import { SessionCard } from "../cards/SessionCard";
 import { StatusBadge, sessionStatus } from "../cards/SessionStatus";
@@ -47,7 +48,7 @@ export function SessionDetailView({ id }: { id: string }) {
   const phase = sessionPhase(session);
 
   const mobileCta =
-    status.kind === "live" ? "Join drop-in" : status.kind === "booked" || status.kind === "joined" ? "View booking" : status.kind === "open" ? (session.format === "group" ? "Reserve a seat" : "Choose a time") : status.kind === "hosting" ? "Manage" : "Details";
+    status.kind === "live" ? "Walk in" : status.kind === "booked" || status.kind === "joined" ? "View booking" : status.kind === "open" ? (session.format === "group" ? "Reserve a seat" : "Choose a time") : status.kind === "hosting" ? "Manage" : "Details";
 
   return (
     <div className="animate-in pb-20 lg:pb-0">
@@ -86,6 +87,26 @@ export function SessionDetailView({ id }: { id: string }) {
               </div>
             </div>
           )}
+
+          <section aria-labelledby="the-room" className="mt-7">
+            <h2 id="the-room" className="sr-only">
+              The room
+            </h2>
+            <div className="rounded-[14px] border border-line bg-surface p-3 sm:p-4">
+              <SessionRoom session={session} size="lg" showChatter />
+              <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 font-mono text-[11px] tracking-[0.06em] text-muted uppercase">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-[3px] border border-dashed border-ink-2/50" aria-hidden="true" /> Free chair
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-[3px] bg-[#e5dccd]" aria-hidden="true" /> {session.format === "drop-in" ? "In the room" : "Reserved"}
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-[3px] ring-2 ring-brand" aria-hidden="true" /> You
+                </span>
+              </p>
+            </div>
+          </section>
 
           <section aria-labelledby="about-session" className="mt-8">
             <h2 id="about-session" className="font-display text-[20px] font-bold">

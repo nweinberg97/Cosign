@@ -8,6 +8,7 @@ import { interestTopics } from "@/lib/recommend";
 import { useStore } from "@/lib/store";
 import { fmtDayTime, fmtRange, ms, ptParts, relativeDay } from "@/lib/time";
 import type { Session, SessionFormat, Stage, Topic, User } from "@/lib/types";
+import { SessionRoom } from "../booking/SessionRoom";
 import { ExpertCard } from "../cards/Cards";
 import { SessionCard } from "../cards/SessionCard";
 import { Avatar } from "../ui/Avatar";
@@ -19,7 +20,7 @@ import { usePageTitle } from "../ui/usePageTitle";
 
 type Availability = "live" | "today" | "week" | "open";
 const AVAILABILITY: { value: Availability; label: string }[] = [
-  { value: "live", label: "Live now" },
+  { value: "live", label: "Door open now" },
   { value: "today", label: "Today" },
   { value: "week", label: "This week" },
   { value: "open", label: "Has open spots" },
@@ -49,7 +50,7 @@ function Header() {
     <PageHeader
       eyebrow="Office Hours"
       title="Time with merchants who've solved it"
-      description="Drop into a live session, book a private conversation, or grab a seat at a small table. Every host is a working merchant sharing what actually worked for them."
+      description="Walk into open office hours, book a private conversation, or grab a seat at a small table. Every host is a working merchant sharing what actually worked for them."
       actions={
         <ButtonLink href="/host/new" variant="secondary" icon="plus">
           Offer Office Hours
@@ -105,45 +106,69 @@ function FeaturedExpert({ user }: { user: User }) {
   );
 }
 
-function LiveNow({ sessions }: { sessions: Session[] }) {
+function OpenOffices({ open, soon }: { open: Session[]; soon: Session[] }) {
   const { state } = useStore();
-  if (!sessions.length) return null;
+  if (!open.length && !soon.length) return null;
   return (
-    <section aria-labelledby="live-now" className="rounded-[18px] border border-live/25 bg-[#fff8f4] p-5 sm:p-6">
-      <div className="flex items-center gap-2">
-        <LiveBadge />
-        <h2 id="live-now" className="text-[15px] font-semibold text-ink">
-          Drop in right now
-        </h2>
-      </div>
-      <ul className="mt-3 space-y-3">
-        {sessions.map((s) => {
+    <section aria-labelledby="hallway" className="rounded-[16px] bg-forest p-5 text-on-forest sm:p-7">
+      <p className="font-mono text-[11px] font-semibold tracking-[0.14em] text-mint uppercase">The hallway</p>
+      <h2 id="hallway" className="font-display mt-1 text-[26px] leading-tight font-bold sm:text-[30px]">
+        {open.length ? "Office hours with the door open" : "No doors open right now"}
+      </h2>
+      <p className="mt-1.5 max-w-[42rem] text-[15px] leading-6 text-on-forest-muted">
+        Like a professor&apos;s office hours: when the door is open, walk in, pull up a chair, and join the conversation. No booking, and you can step out anytime.
+      </p>
+
+      <div className="mt-6 space-y-5">
+        {open.map((s) => {
           const host = state.users[s.hostId];
           const left = seatsLeft(state, s);
           return (
-            <li key={s.id}>
-              <Link href={`/office-hours/${s.id}`} className="flex items-center gap-3 rounded-[12px] bg-surface p-3 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-raised)]">
-                {host && <Avatar user={host} size="md" />}
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate font-semibold text-ink">{s.title}</span>
-                  <span className="block text-[13px] text-muted">
-                    with {host?.name} · until {fmtRange(s.start, s.durationMin).split("–")[1].trim()}
-                  </span>
-                  <span className="mt-1.5 line-clamp-2 block text-[13px] leading-5 text-ink-2">{s.description}</span>
-                </span>
-                <span className="hidden text-right text-[12.5px] sm:block">
-                  <span className="block font-medium text-ink-2">{left > 0 ? `${left} spots open` : "At capacity"}</span>
-                  <span className="text-brand-ink">Join →</span>
-                </span>
-              </Link>
-            </li>
+            <div key={s.id} className="grid gap-5 rounded-[12px] bg-surface p-4 text-ink sm:p-5 lg:grid-cols-[1.25fr_1fr] lg:items-center">
+              <SessionRoom session={s} size="md" showChatter />
+              <div className="min-w-0">
+                <LiveBadge />
+                <h3 className="font-display mt-2 text-[24px] leading-tight font-bold">{s.title}</h3>
+                <p className="mt-1 text-sm text-muted">
+                  {host?.name}, {host?.headline} · open until {fmtRange(s.start, s.durationMin).split("–")[1].trim()}
+                </p>
+                <p className="mt-3 text-[14.5px] leading-6 text-ink-2">{s.description}</p>
+                <p className="mt-3 font-mono text-[11.5px] tracking-[0.06em] text-muted uppercase">
+                  {left > 0 ? `${left} of ${s.capacity} chairs free` : "Every chair is taken"} · {s.topic}
+                </p>
+                <Link
+                  href={`/office-hours/${s.id}`}
+                  className="mt-4 inline-flex h-11 items-center gap-2 rounded-[8px] bg-brand px-4 text-[15px] font-semibold text-white hover:bg-brand-dark"
+                >
+                  Walk in <Icon name="arrowRight" size={16} />
+                </Link>
+              </div>
+            </div>
           );
         })}
-      </ul>
-      <p className="mt-4 flex items-start gap-2 text-[12.5px] leading-5 text-ink-2">
-        <Icon name="info" size={14} className="mt-0.5 shrink-0 text-live" />
-        Drop-ins are open rooms: no booking, join any time while live, and leave whenever you like. In this demo the room is simulated — no audio or video.
-      </p>
+      </div>
+
+      {soon.length > 0 && (
+        <div className="mt-7">
+          <p className="font-mono text-[11px] font-semibold tracking-[0.12em] text-on-forest-muted uppercase">Doors opening soon</p>
+          <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {soon.map((s) => {
+              const host = state.users[s.hostId];
+              return (
+                <li key={s.id}>
+                  <Link href={`/office-hours/${s.id}`} className="block rounded-[12px] bg-forest-2 p-3 transition-colors hover:bg-forest-line">
+                    <SessionRoom session={s} size="sm" />
+                    <p className="mt-2.5 truncate text-[15px] font-semibold text-on-forest">{s.title}</p>
+                    <p className="text-[12.5px] text-on-forest-muted">
+                      {host?.name} · {relativeDay(s.start)}, {fmtRange(s.start, s.durationMin).split("–")[0].trim()} PT
+                    </p>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
     </section>
   );
 }
@@ -211,7 +236,7 @@ export function OfficeHoursView() {
     ? [
         { id: "group", title: "Small-group sessions", description: "Reserve a seat at a table of up to 8 and learn alongside peers.", items: filtered.filter((s) => s.format === "group") },
         { id: "one-to-one", title: "1:1 conversations", description: "Pick a time for a private 30–45 minute conversation.", items: filtered.filter((s) => s.format === "one-to-one") },
-        { id: "drop-in", title: "Upcoming drop-ins", description: "Open rooms — no booking needed, just show up while it's live.", items: filtered.filter((s) => s.format === "drop-in" && sessionPhase(s) !== "live") },
+        { id: "drop-in", title: "Upcoming drop-in office hours", description: "Open-door hours. No booking: walk in while the door is open.", items: filtered.filter((s) => s.format === "drop-in" && sessionPhase(s) !== "live") },
       ]
     : [];
 
@@ -220,10 +245,7 @@ export function OfficeHoursView() {
       <Header />
       <Tabs active="discover" />
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
-        {live.length > 0 ? <LiveNow sessions={live} /> : null}
-        {featured && <FeaturedExpert user={featured} />}
-      </div>
+      <OpenOffices open={live} soon={all.filter((s) => s.format === "drop-in" && sessionPhase(s) === "upcoming")} />
 
       <section aria-labelledby="sessions-heading" className="mt-10">
         <div className="flex flex-col gap-3">
@@ -309,6 +331,11 @@ export function OfficeHoursView() {
           title="Hosts"
           description={topic === "all" ? "Working merchants offering their time. Ranked by relevance to your topics, not popularity." : `Hosts with experience in ${topic.toLowerCase()}.`}
         />
+        {featured && topic === "all" && (
+          <div className="mb-4">
+            <FeaturedExpert user={featured} />
+          </div>
+        )}
         {experts.length ? (
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {experts.map((u) => (

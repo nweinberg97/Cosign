@@ -16,6 +16,7 @@ import { TextArea } from "../ui/Field";
 import { Icon } from "../ui/Icon";
 import { useToast } from "../ui/Toast";
 import { FeedbackForm } from "./FeedbackForm";
+import { SessionRoom } from "./SessionRoom";
 
 function CapacityMeter({ taken, capacity }: { taken: number; capacity: number }) {
   const pct = Math.min(100, Math.round((taken / capacity) * 100));
@@ -25,7 +26,7 @@ function CapacityMeter({ taken, capacity }: { taken: number; capacity: number })
         <div className={`h-full rounded-full ${taken >= capacity ? "bg-warn" : "bg-brand"}`} style={{ width: `${pct}%` }} />
       </div>
       <p className="mt-1.5 text-[12.5px] text-muted">
-        {taken} of {capacity} {capacity === 1 ? "spot" : "spots"} taken
+        {taken} of {capacity} {capacity === 1 ? "chair" : "chairs"} taken
       </p>
     </div>
   );
@@ -97,29 +98,29 @@ export function BookingPanel({ session }: { session: Session }) {
           )}
         </div>
         {mine.status === "joined" ? (
-          <Button className="w-full" icon="video" onClick={() => setRoomOpen(true)}>
-            Return to the room
+          <Button className="w-full" icon="arrowRight" onClick={() => setRoomOpen(true)}>
+            Go back in
           </Button>
         ) : (
           <p className="text-[12.5px] leading-5 text-muted">
-            In a production version you&apos;d get a calendar invite and a video link. This demo doesn&apos;t send anything.
+            In a production version you&apos;d get a calendar invite and a link to the room. This demo doesn&apos;t send anything.
           </p>
         )}
         <Button variant="danger" className="w-full" onClick={() => setConfirmCancel(true)}>
-          {mine.status === "joined" ? "Leave the room" : "Cancel booking"}
+          {mine.status === "joined" ? "Step out" : "Cancel booking"}
         </Button>
         <ConfirmDialog
           open={confirmCancel}
           onClose={() => setConfirmCancel(false)}
           tone="danger"
-          title={mine.status === "joined" ? "Leave this drop-in?" : "Cancel this booking?"}
-          confirmLabel={mine.status === "joined" ? "Leave room" : "Cancel booking"}
-          body={mine.status === "joined" ? "Your spot will open up for someone else. You can rejoin while it's live if there's room." : `Your spot with ${host?.name} will be released for another merchant.`}
+          title={mine.status === "joined" ? "Step out of the room?" : "Cancel this booking?"}
+          confirmLabel={mine.status === "joined" ? "Step out" : "Cancel booking"}
+          body={mine.status === "joined" ? "Your chair opens up for someone else. You can walk back in while the door is open, if there's a free chair." : `Your spot with ${host?.name} will be released for another merchant.`}
           onConfirm={() => {
             setConfirmCancel(false);
             setRoomOpen(false);
             const r = actions.cancelBooking(mine.id);
-            toast(r.ok ? (mine.status === "joined" ? "You left the room." : "Booking cancelled. Your spot was released.") : r.error, r.ok ? "success" : "error");
+            toast(r.ok ? (mine.status === "joined" ? "You stepped out." : "Booking cancelled. Your spot was released.") : r.error, r.ok ? "success" : "error");
           }}
         />
       </div>
@@ -130,35 +131,35 @@ export function BookingPanel({ session }: { session: Session }) {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <LiveBadge />
-            <span className="text-[12.5px] text-muted">Until {fmtTime(new Date(new Date(session.start).getTime() + session.durationMin * 60000).toISOString())} PT</span>
+            <span className="text-[12.5px] text-muted">Open until {fmtTime(new Date(new Date(session.start).getTime() + session.durationMin * 60000).toISOString())} PT</span>
           </div>
           <CapacityMeter taken={taken} capacity={session.capacity} />
           <Button
             size="lg"
             className="w-full"
-            icon="video"
+            icon="arrowRight"
             disabled={left === 0}
             onClick={() => {
               const r = actions.joinDropIn(session.id);
               if (r.ok) {
                 setRoomOpen(true);
-                toast(`You joined ${host?.name.split(" ")[0]}'s drop-in.`);
+                toast(`You walked into ${host?.name.split(" ")[0]}'s office hours.`);
               } else toast(r.error, "error");
             }}
           >
-            {left === 0 ? "Room at capacity" : "Join drop-in now"}
+            {left === 0 ? "Every chair is taken" : "Walk in"}
           </Button>
-          {left === 0 && <p className="text-[12.5px] text-muted">Someone may leave soon. Try again in a few minutes.</p>}
+          {left === 0 && <p className="text-[12.5px] text-muted">Someone usually steps out within a few minutes. Try again soon.</p>}
         </div>
       );
     } else {
       body = (
         <div className="space-y-3">
           <p className="text-sm text-ink-2">
-            Opens {relativeDay(session.start)} at {fmtTime(session.start)} PT. No booking needed — join any time while it&apos;s live, up to {session.capacity} people.
+            The door opens {relativeDay(session.start)} at {fmtTime(session.start)} PT. No booking needed: walk in any time while it&apos;s open, as long as one of the {session.capacity} chairs is free.
           </p>
           <Button size="lg" className="w-full" disabled>
-            Opens {fmtDay(session.start)}, {fmtTime(session.start)}
+            Door opens {fmtDay(session.start)}, {fmtTime(session.start)}
           </Button>
         </div>
       );
@@ -350,37 +351,36 @@ function DropInRoom({ session, onClose, onLeave }: { session: Session; onClose: 
   const related = resourcesForSession(session.id)[0];
   const [draft, setDraft] = useState("");
   const [queued, setQueued] = useState<string[]>([]);
+  const myBubble = queued.length ? [{ userId: me.id, text: queued[queued.length - 1] }] : [];
 
   return (
     <Dialog
       open
       onClose={onClose}
       size="lg"
-      title={session.title}
-      description={<span>Simulated drop-in room · no audio or video is used in this demo</span>}
+      title={`${host?.name.split(" ")[0]}’s office hours`}
+      description={<span>{session.title} · a simulated room, no audio or video in this demo</span>}
       footer={
         <>
           <Button variant="danger" onClick={onLeave}>
-            Leave room
+            Step out
           </Button>
           <Button variant="secondary" onClick={onClose}>
-            Minimize
+            Back to the session page
           </Button>
         </>
       }
     >
-      <div className="grid gap-5 sm:grid-cols-[1.4fr_1fr]">
-        <div>
-          <div className="flex aspect-video flex-col items-center justify-center rounded-[14px] bg-ink text-center text-white">
-            {host && <Avatar user={host} size="xl" />}
-            <p className="mt-3 font-medium">{host?.name} is hosting live</p>
-            <p className="mt-1 text-[13px] text-white/70">Questions are taken in the order they&apos;re raised</p>
-            <span className="mt-3">
-              <LiveBadge label="Live" />
-            </span>
-          </div>
+      <div className="space-y-5">
+        <SessionRoom
+          session={session}
+          size="lg"
+          showChatter
+          extraBubbles={myBubble}
+          extraBoardLines={queued.map((q, i) => `${i + 3}. You — ${q}`)}
+        />
+        <div className="grid gap-5 sm:grid-cols-[1.3fr_1fr]">
           <form
-            className="mt-4"
             onSubmit={(e) => {
               e.preventDefault();
               if (draft.trim().length < 3) return;
@@ -389,14 +389,15 @@ function DropInRoom({ session, onClose, onLeave }: { session: Session; onClose: 
             }}
           >
             <label htmlFor="room-q" className="text-sm font-medium text-ink">
-              Raise a question for {host?.name.split(" ")[0]}
+              Raise your hand for {host?.name.split(" ")[0]}
             </label>
-            <div className="mt-1.5 flex gap-2">
+            <p className="mt-0.5 text-[12.5px] text-muted">Your question goes on the whiteboard queue, like signing the list on an office door.</p>
+            <div className="mt-2 flex gap-2">
               <input
                 id="room-q"
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
-                placeholder="Type your question"
+                placeholder="e.g. Could you look at my checkout?"
                 className="h-10 min-w-0 flex-1 rounded-[var(--radius-control)] border border-line-strong px-3 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30"
               />
               <Button type="submit" icon="hand" disabled={draft.trim().length < 3}>
@@ -409,42 +410,42 @@ function DropInRoom({ session, onClose, onLeave }: { session: Session; onClose: 
                   <li key={i} className="flex items-start gap-2 rounded-lg bg-brand-wash px-3 py-2 text-[13px] text-ink-2">
                     <Icon name="check" size={14} className="mt-0.5 text-brand" />
                     <span>
-                      <span className="font-medium">In the queue (#{i + 1}):</span> {q}
+                      <span className="font-medium">On the whiteboard (#{i + 3}):</span> {q}
                     </span>
                   </li>
                 ))}
               </ul>
             )}
           </form>
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-ink">
-            In the room · {people.length + 1} of {session.capacity + 1}
-          </p>
-          <ul className="mt-2 space-y-2">
-            {host && (
-              <li className="flex items-center gap-2 text-sm">
-                <Avatar user={host} size="sm" />
-                <span className="font-medium">{host.name}</span>
-                <span className="text-[12px] text-muted">Host</span>
-              </li>
-            )}
-            {people.map((u) => (
-              <li key={u.id} className="flex items-center gap-2 text-sm">
-                <Avatar user={u} size="sm" />
-                <span>{u.id === me.id ? `${u.name} (you)` : u.name}</span>
-                <span className="truncate text-[12px] text-muted">{u.business}</span>
-              </li>
-            ))}
-          </ul>
-          {related && (
-            <p className="mt-4 text-[12.5px] leading-5 text-muted">
-              Related reading:{" "}
-              <Link href={`/resources/${related.id}`} className="font-medium text-brand-ink underline-offset-4 hover:underline" onClick={onClose}>
-                {related.title}
-              </Link>
+          <div>
+            <p className="font-mono text-[11px] font-semibold tracking-[0.1em] text-muted uppercase">
+              Around the table · {people.length + 1} of {session.capacity + 1}
             </p>
-          )}
+            <ul className="mt-2 space-y-1.5">
+              {host && (
+                <li className="flex items-center gap-2 text-sm">
+                  <Avatar user={host} size="xs" />
+                  <span className="font-medium">{host.name}</span>
+                  <span className="font-mono text-[10px] text-brand-ink">HOST</span>
+                </li>
+              )}
+              {people.map((u) => (
+                <li key={u.id} className="flex items-center gap-2 text-sm">
+                  <Avatar user={u} size="xs" />
+                  <span className={u.id === me.id ? "font-semibold" : ""}>{u.id === me.id ? `${u.name} (you)` : u.name}</span>
+                  <span className="truncate text-[12px] text-muted">{u.business}</span>
+                </li>
+              ))}
+            </ul>
+            {related && (
+              <p className="mt-4 text-[12.5px] leading-5 text-muted">
+                On the shelf:{" "}
+                <Link href={`/resources/${related.id}`} className="font-medium text-brand-ink underline-offset-4 hover:underline" onClick={onClose}>
+                  {related.title}
+                </Link>
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </Dialog>

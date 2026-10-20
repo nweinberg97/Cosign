@@ -14,6 +14,10 @@ const TONES: [string, string][] = [
   ["#dde5e2", "#2f4f45"],
 ];
 
+export function avatarColors(user: Pick<User, "avatarTone">): [string, string] {
+  return TONES[Math.abs(user.avatarTone) % TONES.length];
+}
+
 export function initials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return "?";

@@ -1,8 +1,26 @@
 # Cosign
 
-**Learn from merchants who've been there.**
+**The shortest path from a business problem to someone who's solved it.**
 
-Cosign is an independent product concept and working prototype: a curated community and mentorship layer for a commerce ecosystem. Merchants join small, private circles matched to their stage, niche, and city — and get time with experienced operators through **Office Hours**: live drop-ins, bookable 1:1 conversations, and small-group sessions.
+### [▶ Try the live demo](https://nweinberg97.github.io/Cosign/)
+
+Cosign is an independent product concept and working prototype: a curated network built into the commerce platform merchants already use. Merchants join small, private circles matched to their stage, niche, and city, and get time with experienced operators through **Office Hours**: walk into open-door drop-in hours, book a private 1:1, or take a seat at a small table.
+
+![Cosign landing page](docs/screenshots/landing.png)
+
+### Office Hours that feel like office hours
+
+Like a professor's office hours: when the door is open, you walk in, pull up a chair, and put your question on the whiteboard.
+
+![The hallway of open office hours](docs/screenshots/office-hours.png)
+
+![Inside an office: the host at the table, chairs, and the whiteboard queue](docs/screenshots/office-room.png)
+
+### Not another forum
+
+![How Cosign compares with a typical community platform](docs/screenshots/different.png)
+
+![Personalized home for a newer merchant](docs/screenshots/home.png)
 
 > **Independent product concept.** Cosign is an independently developed product concept created for portfolio and educational purposes to demonstrate product thinking and prototyping. It is not an official Shopify product, is not affiliated with or endorsed by Shopify, and does not represent Shopify's product roadmap. All merchants, businesses, communities, sessions, and activity shown in this demo are fictional or illustrative. No real merchant data or external partner integrations are used.
 
@@ -23,8 +41,8 @@ The app opens on a landing page that explains the concept, how it differs from t
 
 1. **Enter as Maya**, a newer skincare merchant, and personalize (stage, goal, topics). Home re-ranks around your answers and explains every recommendation.
 2. **Join a community** (e.g. Vancouver Consumer Brands). Members and discussions unlock — membership is private by design.
-3. **Office Hours** → open *Conversion quick wins for new stores* → **Reserve a seat** with a question for the host. It appears on Home and in **My bookings**.
-4. Book a **1:1** by picking a time slot; try the **fully booked** pricing session; **join the live drop-in** (simulated room).
+3. **Office Hours** → walk into Sam's open office (the door is open), raise your hand, and see your question land on the whiteboard. Then open *Conversion quick wins for new stores* → **Reserve a seat**; it appears on Home and in **My bookings**.
+4. Book a **1:1** by picking a time slot, and try the **fully booked** pricing session.
 5. **Questions** → ask something, reply, mark an answer helpful, and jump from the question to relevant Office Hours.
 6. In **Demo controls** (sidebar, or *More* on mobile) **switch to Jordan**, the host. Review attendees and advance questions, then **Offer Office Hours** and see it in discovery immediately.
 7. Edit your **profile** and add a link. Refresh — everything persists. **Reset demo data** restores the seed.
@@ -45,6 +63,10 @@ The app opens on a landing page that explains the concept, how it differs from t
 - **Client-rendered app.** State is browser-local, so pages render after hydration with a brief loading state. A production version would server-render with real data.
 - **No icon or UI dependencies.** A small in-repo icon set and components keep the bundle lean.
 - **Initial-letter avatars** instead of photography, so no real people or stock portraits are implied.
+
+## The live demo (GitHub Pages)
+
+`docs/index.html` is a prebuilt, single-file static preview of this app, served by GitHub Pages from the `docs/` folder. It runs the same source as the Next.js app; page changes happen in-app, so the browser address bar stays on the home URL.
 
 ## Architecture
 

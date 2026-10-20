@@ -19,8 +19,8 @@ export function sessionStatus(state: AppState, s: Session, userId: string): { ki
   if (phase === "ended") return { kind: "ended", detail: "This session has ended" };
   const left = seatsLeft(state, s);
   if (s.format === "drop-in") {
-    if (phase === "live") return left > 0 ? { kind: "live", detail: `${left} of ${s.capacity} spots open` } : { kind: "full", detail: "Room at capacity" };
-    return { kind: "upcoming-dropin", detail: `Opens ${fmtDayTime(s.start)}` };
+    if (phase === "live") return left > 0 ? { kind: "live", detail: `${left} of ${s.capacity} chairs free` } : { kind: "full", detail: "Every chair is taken" };
+    return { kind: "upcoming-dropin", detail: `Door opens ${fmtDayTime(s.start)}` };
   }
   if (s.format === "one-to-one") {
     const open = openSlots(state, s).length;
@@ -48,7 +48,7 @@ export function StatusBadge({ kind }: { kind: StatusKind; detail?: string }) {
     case "cancelled":
       return <Badge tone="danger">Cancelled</Badge>;
     case "upcoming-dropin":
-      return <Badge tone="neutral" icon="clock">Upcoming</Badge>;
+      return <Badge tone="neutral" icon="clock">Door opens later</Badge>;
     default:
       // Open sessions show their remaining capacity elsewhere on the card.
       return null;
