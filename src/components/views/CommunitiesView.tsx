@@ -263,7 +263,7 @@ export function CommunityDetailView({ id }: { id: string }) {
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
             <div className="space-y-8">
               <section aria-labelledby="ov-about">
-                <h2 id="ov-about" className="text-[17px] font-semibold">
+                <h2 id="ov-about" className="font-display text-[20px] font-bold">
                   What this community is for
                 </h2>
                 <p className="mt-2 text-[15px] leading-7 text-ink-2">{community.description}</p>
@@ -273,7 +273,7 @@ export function CommunityDetailView({ id }: { id: string }) {
                 </p>
               </section>
               <section aria-labelledby="ov-discuss">
-                <h2 id="ov-discuss" className="text-[17px] font-semibold">
+                <h2 id="ov-discuss" className="font-display text-[20px] font-bold">
                   What members talk about
                 </h2>
                 <div className="mt-3 flex flex-wrap gap-2">

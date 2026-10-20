@@ -48,20 +48,26 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function NavLink({ item, pathname, badge }: { item: NavItem; pathname: string; badge?: number }) {
+function NavLink({ item, pathname, badge, dark = false }: { item: NavItem; pathname: string; badge?: number; dark?: boolean }) {
   const active = isActive(pathname, item.href);
+  const tone = dark
+    ? active
+      ? "bg-forest-2 font-semibold text-on-forest"
+      : "text-on-forest-muted hover:bg-forest-2/70 hover:text-on-forest"
+    : active
+      ? "bg-brand-wash font-semibold text-ink"
+      : "text-ink-2 hover:bg-sunken hover:text-ink";
   return (
     <Link
       href={item.href}
       aria-current={active ? "page" : undefined}
-      className={`group flex h-10 items-center gap-3 rounded-[10px] px-3 text-[15px] transition-colors ${
-        active ? "bg-surface font-medium text-ink shadow-[var(--shadow-card)]" : "text-ink-2 hover:bg-sunken hover:text-ink"
-      }`}
+      className={`group relative flex h-10 items-center gap-3 rounded-[8px] px-3 text-[15px] transition-colors ${tone}`}
     >
-      <Icon name={item.icon} size={19} className={active ? "text-brand" : "text-muted group-hover:text-ink-2"} />
+      {active && <span className={`absolute top-2 bottom-2 left-0 w-[3px] rounded-full ${dark ? "bg-mint" : "bg-brand"}`} aria-hidden="true" />}
+      <Icon name={item.icon} size={19} className={active ? (dark ? "text-mint" : "text-brand") : ""} />
       <span className="flex-1">{item.label}</span>
       {badge ? (
-        <span className="rounded-full bg-brand px-1.5 text-[11px] font-semibold leading-5 text-white" aria-label={`${badge} new`}>
+        <span className={`rounded-full px-1.5 font-mono text-[11px] font-semibold leading-5 ${dark ? "bg-mint text-forest" : "bg-brand text-white"}`} aria-label={`${badge} new`}>
           {badge}
         </span>
       ) : null}
@@ -69,20 +75,20 @@ function NavLink({ item, pathname, badge }: { item: NavItem; pathname: string; b
   );
 }
 
-function DemoControls({ onDone }: { onDone?: () => void }) {
+function DemoControls({ onDone, dark = false }: { onDone?: () => void; dark?: boolean }) {
   const { state, me, actions, persistent } = useStore();
   const toast = useToast();
   const router = useRouter();
   const [confirmReset, setConfirmReset] = useState(false);
 
   return (
-    <div className="rounded-[12px] border border-dashed border-line-strong bg-paper p-3">
+    <div className={`rounded-[10px] border border-dashed p-3 ${dark ? "border-forest-line bg-forest-2/50 text-on-forest" : "border-line-strong bg-paper"}`}>
       <div className="mb-2 flex items-center justify-between">
-        <p className="text-[11px] font-semibold tracking-wider text-muted uppercase">Demo controls</p>
-        <span className="rounded bg-warn-tint px-1.5 text-[10.5px] font-semibold text-warn">Not real auth</span>
+        <p className={`font-mono text-[10.5px] font-semibold tracking-[0.12em] uppercase ${dark ? "text-on-forest-muted" : "text-muted"}`}>Demo controls</p>
+        <span className="rounded bg-warn-tint px-1.5 font-mono text-[10px] font-semibold text-warn">NOT REAL AUTH</span>
       </div>
       <fieldset>
-        <legend className="mb-1.5 text-[12.5px] text-ink-2">View the product as</legend>
+        <legend className={`mb-1.5 text-[12.5px] ${dark ? "text-on-forest-muted" : "text-ink-2"}`}>View the product as</legend>
         <div className="grid grid-cols-2 gap-1.5">
           {PERSONAS.map((p) => {
             const u = state.users[p.id];
@@ -98,23 +104,23 @@ function DemoControls({ onDone }: { onDone?: () => void }) {
                   toast(`Now viewing as ${u.name} (${p.role.toLowerCase()}).`, "info");
                   onDone?.();
                 }}
-                className={`flex items-center gap-2 rounded-[9px] border px-2 py-1.5 text-left transition-colors ${
-                  on ? "border-brand bg-surface" : "border-transparent hover:bg-sunken"
+                className={`flex items-center gap-2 rounded-[8px] border px-2 py-1.5 text-left transition-colors ${
+                  on ? (dark ? "border-mint bg-forest" : "border-brand bg-surface") : dark ? "border-transparent hover:bg-forest" : "border-transparent hover:bg-sunken"
                 }`}
               >
                 <Avatar user={u} size="xs" />
                 <span className="min-w-0">
-                  <span className="block truncate text-[12.5px] font-medium text-ink">{u.name.split(" ")[0]}</span>
-                  <span className="block text-[11px] text-muted">{p.short}</span>
+                  <span className={`block truncate text-[12.5px] font-medium ${dark ? "text-on-forest" : "text-ink"}`}>{u.name.split(" ")[0]}</span>
+                  <span className={`block text-[11px] ${dark ? "text-on-forest-muted" : "text-muted"}`}>{p.short}</span>
                 </span>
               </button>
             );
           })}
         </div>
       </fieldset>
-      <p className="mt-2.5 flex items-center gap-1.5 text-[12px] text-muted">
+      <p className={`mt-2.5 flex items-center gap-1.5 font-mono text-[11px] ${dark ? "text-on-forest-muted" : "text-muted"}`}>
         <Icon name="clock" size={13} />
-        Demo clock: Tue, Oct 20 · 10:30 AM PT
+        TUE OCT 20 · 10:30 AM PT
       </p>
       {!persistent && (
         <p className="mt-2 text-[12px] leading-4 text-warn">Browser storage is unavailable, so changes last only until this tab closes.</p>
@@ -122,7 +128,7 @@ function DemoControls({ onDone }: { onDone?: () => void }) {
       <button
         type="button"
         onClick={() => setConfirmReset(true)}
-        className="mt-2 inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-2 underline-offset-4 hover:text-danger hover:underline"
+        className={`mt-2 inline-flex items-center gap-1.5 text-[12.5px] font-medium underline-offset-4 hover:underline ${dark ? "text-on-forest hover:text-[#ffb4a6]" : "text-ink-2 hover:text-danger"}`}
       >
         <Icon name="rotate" size={13} />
         Reset demo data
@@ -181,42 +187,42 @@ export function AppShell({ children }: { children: ReactNode }) {
       </a>
       <div className="min-h-screen lg:grid lg:grid-cols-[264px_1fr]">
         {/* Desktop sidebar */}
-        <aside className="sticky top-0 hidden h-screen flex-col border-r border-line bg-[#f1eee6] px-4 py-5 lg:flex">
+        <aside className="sticky top-0 hidden h-screen flex-col overflow-y-auto bg-forest px-4 py-5 text-on-forest lg:flex">
           <div className="px-2">
-            <Brand />
-            <p className="mt-1.5 text-[12.5px] leading-4 text-muted">Learn from merchants who&apos;ve been there.</p>
+            <Brand tone="dark" />
+            <p className="mt-2 font-hand text-[19px] leading-5 text-mint">learn from merchants who&apos;ve been there</p>
           </div>
           <nav aria-label="Main" className="mt-7 flex flex-col gap-0.5">
             {NAV.map((item) => (
-              <NavLink key={item.href} item={item} pathname={pathname} badge={item.href === "/questions" ? newReplies : undefined} />
+              <NavLink key={item.href} item={item} pathname={pathname} dark badge={item.href === "/questions" ? newReplies : undefined} />
             ))}
           </nav>
           <div className="mt-6">
-            <p className="mb-1 px-3 text-[11px] font-semibold tracking-wider text-muted uppercase">Hosting</p>
-            <NavLink item={{ href: "/host", label: "Host dashboard", icon: "hand" }} pathname={pathname} />
+            <p className="mb-1 px-3 font-mono text-[10.5px] font-semibold tracking-[0.12em] text-on-forest-muted uppercase">Hosting</p>
+            <NavLink item={{ href: "/host", label: "Host dashboard", icon: "hand" }} pathname={pathname} dark />
           </div>
-          <div className="mt-auto space-y-3">
-            <Link href="/about" className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-[13px] ${isActive(pathname, "/about") ? "font-medium text-ink" : "text-muted hover:text-ink"}`}>
+          <div className="mt-auto space-y-3 pt-6">
+            <Link href="/about" className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-[13px] ${isActive(pathname, "/about") ? "font-medium text-on-forest" : "text-on-forest-muted hover:text-on-forest"}`}>
               <Icon name="info" size={15} />
               About this concept
             </Link>
-            <DemoControls />
+            <DemoControls dark />
           </div>
         </aside>
 
         <div className="min-w-0">
           {/* Mobile top bar */}
-          <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-paper/95 px-4 backdrop-blur lg:hidden">
-            <Brand />
+          <header className="sticky top-0 z-30 flex h-14 items-center justify-between bg-forest px-4 lg:hidden">
+            <Brand tone="dark" />
             <button
               type="button"
               onClick={() => setMoreOpen(true)}
-              className="flex items-center gap-2 rounded-full border border-line bg-surface py-1 pr-3 pl-1 text-[13px] font-medium"
+              className="flex items-center gap-2 rounded-full border border-forest-line bg-forest-2 py-1 pr-3 pl-1 text-[13px] font-medium text-on-forest"
               aria-label={`Viewing as ${me.name}. Open menu and demo controls`}
             >
               <Avatar user={me} size="xs" />
               {me.name.split(" ")[0]}
-              <Icon name="menu" size={15} className="text-muted" />
+              <Icon name="menu" size={15} className="text-on-forest-muted" />
             </button>
           </header>
 

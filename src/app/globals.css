@@ -1,36 +1,47 @@
 @import "tailwindcss";
 
+/* Cosign — "signed & stamped": forest-green chrome, white working surfaces,
+   a characterful grotesque for voice, a mono for the ticket/ledger details. */
 @theme {
-  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --font-display: "Iowan Old Style", "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --font-sans: var(--font-body-face, "Instrument Sans"), ui-sans-serif, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-display: var(--font-display-face, "Bricolage Grotesque"), "Instrument Sans", ui-sans-serif, -apple-system, sans-serif;
+  --font-mono: var(--font-mono-face, "JetBrains Mono"), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-hand: var(--font-hand-face, "Nothing You Could Do"), "Bradley Hand", cursive;
 
-  --color-paper: #f6f4ee;
+  --color-paper: #f3f5f0;
   --color-surface: #ffffff;
-  --color-sunken: #efece4;
-  --color-ink: #1b1f1c;
-  --color-ink-2: #3a413c;
-  --color-muted: #5b645e;
-  --color-line: #e4e0d5;
-  --color-line-strong: #cbc6b8;
+  --color-sunken: #e8ece4;
+  --color-ink: #0e1d16;
+  --color-ink-2: #2c3b33;
+  --color-muted: #56655c;
+  --color-line: #dbe1d7;
+  --color-line-strong: #bcc6b8;
 
-  --color-brand: #0b7a53;
-  --color-brand-dark: #07603f;
-  --color-brand-ink: #075a3b;
-  --color-brand-tint: #e3f1e9;
-  --color-brand-wash: #f0f7f2;
+  --color-brand: #0a7a4b;
+  --color-brand-dark: #075f3a;
+  --color-brand-ink: #06593a;
+  --color-brand-tint: #ddf2e5;
+  --color-brand-wash: #eff8f2;
 
-  --color-live: #b93a0c;
-  --color-live-tint: #fdebe2;
-  --color-warn: #8a5a00;
-  --color-warn-tint: #fbf0d9;
+  --color-forest: #0c2a1f;
+  --color-forest-2: #143a2c;
+  --color-forest-line: #24503f;
+  --color-on-forest: #eef6f1;
+  --color-on-forest-muted: #9cbcab;
+  --color-mint: #86e3ae;
+
+  --color-live: #b5360b;
+  --color-live-tint: #fde9df;
+  --color-warn: #865700;
+  --color-warn-tint: #fbefd5;
   --color-danger: #b42318;
   --color-danger-tint: #fdecea;
 
-  --radius-card: 14px;
-  --radius-control: 10px;
+  --radius-card: 12px;
+  --radius-control: 8px;
 
-  --shadow-card: 0 1px 2px rgb(27 31 28 / 0.05), 0 1px 1px rgb(27 31 28 / 0.03);
-  --shadow-raised: 0 10px 30px -12px rgb(27 31 28 / 0.25), 0 2px 6px rgb(27 31 28 / 0.06);
+  --shadow-card: 0 1px 0 rgb(14 29 22 / 0.04);
+  --shadow-raised: 0 14px 34px -16px rgb(12 42 31 / 0.35), 0 2px 6px rgb(12 42 31 / 0.06);
 }
 
 :root {
@@ -61,7 +72,55 @@ body {
 
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.025em;
+  font-variation-settings: "opsz" 48;
+}
+
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Admission-ticket session card: a stub, a perforation, and the body. */
+.ticket {
+  position: relative;
+  display: grid;
+  grid-template-columns: 84px 1fr;
+}
+@media (min-width: 640px) {
+  .ticket { grid-template-columns: 104px 1fr; }
+}
+.ticket-stub {
+  position: relative;
+  border-right: 1.5px dashed var(--color-line-strong);
+}
+.ticket-stub::before,
+.ticket-stub::after {
+  content: "";
+  position: absolute;
+  right: -9px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+}
+.ticket-on-forest .ticket-stub::before,
+.ticket-on-forest .ticket-stub::after { background: var(--color-forest); border-color: var(--color-forest); }
+.ticket-stub::before { top: -9px; clip-path: inset(50% 0 0 0); }
+.ticket-stub::after { bottom: -9px; clip-path: inset(0 0 50% 0); }
+
+/* Hand-drawn signature stroke that writes itself once on load. */
+.signature-path {
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: cosign-sign 1.4s 0.35s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+}
+@keyframes cosign-sign {
+  to { stroke-dashoffset: 0; }
 }
 
 .prose-cosign p + p {
@@ -70,9 +129,9 @@ body {
 
 /* Live indicator pulse — disabled for users who prefer reduced motion. */
 @keyframes cosign-pulse {
-  0% { box-shadow: 0 0 0 0 rgb(185 58 12 / 0.45); }
-  70% { box-shadow: 0 0 0 7px rgb(185 58 12 / 0); }
-  100% { box-shadow: 0 0 0 0 rgb(185 58 12 / 0); }
+  0% { box-shadow: 0 0 0 0 rgb(255 255 255 / 0.7); }
+  70% { box-shadow: 0 0 0 6px rgb(255 255 255 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(255 255 255 / 0); }
 }
 .live-dot {
   animation: cosign-pulse 2s infinite;

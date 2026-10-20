@@ -25,8 +25,8 @@ export function PageHeader({
       )}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          {eyebrow && <div className="mb-1.5 text-[13px] font-medium text-brand-ink">{eyebrow}</div>}
-          <h1 className="font-display text-[28px] leading-tight font-semibold text-ink sm:text-[34px]">{title}</h1>
+          {eyebrow && <div className="mb-2 font-mono text-[11.5px] tracking-[0.12em] text-brand-ink uppercase">{eyebrow}</div>}
+          <h1 className="font-display text-[32px] leading-[1.04] font-bold text-ink sm:text-[42px]">{title}</h1>
           {description && <p className="mt-2 max-w-2xl text-[15px] leading-6 text-muted">{description}</p>}
         </div>
         {actions && <div className="flex shrink-0 flex-wrap gap-2">{actions}</div>}
@@ -49,7 +49,7 @@ export function SectionHeader({
   return (
     <div className="mb-3 flex items-end justify-between gap-4">
       <div>
-        <h2 id={id} className="text-[17px] font-semibold text-ink">
+        <h2 id={id} className="font-display text-[20px] leading-tight font-bold text-ink">
           {title}
         </h2>
         {description && <p className="mt-0.5 text-sm text-muted">{description}</p>}

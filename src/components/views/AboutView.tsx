@@ -53,7 +53,7 @@ export function AboutView() {
       </Card>
 
       <section className="mt-10" aria-labelledby="principles">
-        <h2 id="principles" className="text-[19px] font-semibold">
+        <h2 id="principles" className="font-display text-[22px] font-bold">
           Principles
         </h2>
         <ul className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -74,7 +74,7 @@ export function AboutView() {
       </section>
 
       <section className="mt-10" aria-labelledby="moat">
-        <h2 id="moat" className="text-[19px] font-semibold">
+        <h2 id="moat" className="font-display text-[22px] font-bold">
           Where the advantage could come from
         </h2>
         <p className="mt-1 text-sm text-muted">Community software alone isn&apos;t a moat. The combination below is the hypothesis to test.</p>
@@ -97,7 +97,7 @@ export function AboutView() {
 
       <section className="mt-10 grid gap-6 md:grid-cols-2" aria-label="Measurement and risks">
         <div>
-          <h2 className="text-[19px] font-semibold">How it would be measured</h2>
+          <h2 className="font-display text-[22px] font-bold">How it would be measured</h2>
           <ul className="mt-3 space-y-3">
             {METRICS.map((m) => (
               <li key={m.title}>
@@ -109,7 +109,7 @@ export function AboutView() {
           <p className="mt-3 text-[12.5px] text-muted">Proposed frameworks, not measured outcomes. The demo deliberately has no analytics dashboard.</p>
         </div>
         <div>
-          <h2 className="text-[19px] font-semibold">Open questions</h2>
+          <h2 className="font-display text-[22px] font-bold">Open questions</h2>
           <ul className="mt-3 space-y-3">
             {RISKS.map((r) => (
               <li key={r.q}>
@@ -122,7 +122,7 @@ export function AboutView() {
       </section>
 
       <section className="mt-10" aria-labelledby="simulated">
-        <h2 id="simulated" className="text-[19px] font-semibold">
+        <h2 id="simulated" className="font-display text-[22px] font-bold">
           What&apos;s simulated in this prototype
         </h2>
         <ul className="mt-3 space-y-1.5">

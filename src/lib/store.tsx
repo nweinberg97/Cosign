@@ -345,7 +345,7 @@ const actions: Actions = (() => {
         const uid = s.currentUserId;
         const reply = s.replies.find((r) => r.id === replyId);
         if (!reply) return { result: fail("That reply no longer exists.") };
-        if (reply.authorId === uid) return { result: fail("You can't mark your own reply as helpful.") };
+        if (reply.authorId === uid) return { result: fail("You can't cosign your own reply.") };
         const current = s.votes[replyId] ?? [];
         const next = current.includes(uid) ? current.filter((x) => x !== uid) : [...current, uid];
         return { next: { ...s, votes: { ...s.votes, [replyId]: next } }, result: { ok: true } };

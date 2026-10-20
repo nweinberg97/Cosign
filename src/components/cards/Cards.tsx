@@ -162,7 +162,7 @@ export function QuestionCard({ question, showCommunity = true }: { question: Que
           </span>
         )}
         <span className="ml-auto flex items-center gap-3">
-          {helpful && <Badge tone="brand" icon="check">Helpful answer</Badge>}
+          {helpful && <Badge tone="brand" icon="check">Cosigned answer</Badge>}
           <span className={`inline-flex items-center gap-1 ${replies.length ? "text-ink-2" : "font-medium text-warn"}`}>
             <Icon name="message" size={14} />
             {replies.length ? `${replies.length} ${replies.length === 1 ? "reply" : "replies"}` : "Unanswered"}

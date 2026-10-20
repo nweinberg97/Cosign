@@ -11,6 +11,7 @@ import { FeedbackForm } from "../booking/FeedbackForm";
 import { CommunityCard, EventCard, QuestionCard, ResourceCard } from "../cards/Cards";
 import { SessionCard } from "../cards/SessionCard";
 import { useShell } from "../shell/AppShell";
+import { SignatureStroke } from "../shell/Brand";
 import { Avatar } from "../ui/Avatar";
 import { LiveBadge } from "../ui/Badge";
 import { Button, ButtonLink } from "../ui/Button";
@@ -60,8 +61,8 @@ export function HomeView() {
     <div className="animate-in">
       <header className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-[13px] font-medium text-brand-ink">Tuesday, October 20</p>
-          <h1 className="font-display mt-1 text-[32px] leading-tight font-semibold sm:text-[38px]">Good morning, {firstName}.</h1>
+          <p className="font-mono text-[11.5px] tracking-[0.12em] text-brand-ink uppercase">Tue · Oct 20 · 10:30 AM PT</p>
+          <h1 className="font-display mt-2 text-[36px] leading-[1.02] font-bold sm:text-[46px]">Good morning, {firstName}.</h1>
           <p className="mt-2 max-w-xl text-[15px] leading-6 text-muted">
             Your network of merchants who&apos;ve been there. Here&apos;s what&apos;s worth your time today.
           </p>
@@ -90,21 +91,20 @@ export function HomeView() {
 
       {/* Suggested next step */}
       <section aria-labelledby="next-step" className="mb-8">
-        <div className="relative overflow-hidden rounded-[18px] bg-ink p-5 text-white sm:p-6">
-          <div className="absolute -top-16 -right-10 h-48 w-48 rounded-full border-[18px] border-white/5" aria-hidden="true" />
-          <div className="absolute -right-24 -bottom-24 h-56 w-56 rounded-full border-[18px] border-[#7fd1a6]/10" aria-hidden="true" />
-          <p id="next-step" className="flex items-center gap-2 text-[12px] font-semibold tracking-wider text-[#9fdcbb] uppercase">
+        <div className="relative overflow-hidden rounded-[16px] bg-forest p-5 text-on-forest sm:p-7">
+          <SignatureStroke className="pointer-events-none absolute -right-6 bottom-4 h-14 w-[46%] opacity-60" animate={false} />
+          <p id="next-step" className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[0.14em] text-mint uppercase">
             Suggested next step {next.live && <LiveBadge label="Live" />}
           </p>
-          <p className="font-display mt-2 max-w-2xl text-[22px] leading-snug font-semibold sm:text-[24px]">{next.title}</p>
-          <p className="mt-1.5 max-w-2xl text-sm leading-6 text-white/75">{next.body}</p>
+          <p className="font-display mt-3 max-w-2xl text-[24px] leading-tight font-bold sm:text-[30px]">{next.title}</p>
+          <p className="mt-2 max-w-xl text-[15px] leading-6 text-on-forest-muted">{next.body}</p>
           <div className="mt-4">
             {next.href ? (
-              <Link href={next.href} className="inline-flex h-10 items-center gap-2 rounded-[var(--radius-control)] bg-white px-4 text-sm font-semibold text-ink hover:bg-brand-tint">
+              <Link href={next.href} className="inline-flex h-10 items-center gap-2 rounded-[var(--radius-control)] bg-mint px-4 text-sm font-semibold text-forest hover:bg-white">
                 {next.cta} <Icon name="arrowRight" size={16} />
               </Link>
             ) : (
-              <button type="button" onClick={next.onClick} className="inline-flex h-10 items-center gap-2 rounded-[var(--radius-control)] bg-white px-4 text-sm font-semibold text-ink hover:bg-brand-tint">
+              <button type="button" onClick={next.onClick} className="inline-flex h-10 items-center gap-2 rounded-[var(--radius-control)] bg-mint px-4 text-sm font-semibold text-forest hover:bg-white">
                 {next.cta} <Icon name="arrowRight" size={16} />
               </button>
             )}

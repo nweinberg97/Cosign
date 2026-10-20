@@ -217,9 +217,10 @@ export function QuestionDetailView({ id }: { id: string }) {
           </article>
 
           <section aria-labelledby="replies" className="mt-10">
-            <h2 id="replies" className="text-[17px] font-semibold">
+            <h2 id="replies" className="font-display text-[20px] font-bold">
               {replies.length} {replies.length === 1 ? "reply" : "replies"}
             </h2>
+            <p className="mt-1 text-[13px] text-muted">Cosign an answer to vouch that it helped. The most-cosigned answer is highlighted.</p>
             {replies.length === 0 && <p className="mt-2 text-sm text-muted">No replies yet. If you&apos;ve faced this, your experience counts.</p>}
             <ol className="mt-4 space-y-3">
               {replies.map((r) => {
@@ -242,7 +243,7 @@ export function QuestionDetailView({ id }: { id: string }) {
                       {isNew && <Badge tone="brand">New</Badge>}
                       {helpful === r.id && (
                         <span className="ml-auto">
-                          <Badge tone="brand" icon="check">Most helpful</Badge>
+                          <Badge tone="brand" icon="check">Most cosigned</Badge>
                         </span>
                       )}
                     </div>
@@ -259,12 +260,12 @@ export function QuestionDetailView({ id }: { id: string }) {
                         className={`inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-[13px] transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
                           voted ? "border-brand bg-brand-tint font-medium text-brand-ink" : "border-line-strong text-ink-2 hover:border-ink-2/60"
                         }`}
-                        title={own ? "You can't vote on your own reply" : undefined}
+                        title={own ? "You can't cosign your own reply" : "Cosign = mark this answer as helpful"}
                       >
-                        <Icon name="thumb" size={14} />
-                        {voted ? "Marked helpful" : "Helpful"}
-                        <span className="text-muted" aria-label={`${votes.length} helpful votes`}>
-                          · {votes.length}
+                        <Icon name={voted ? "check" : "edit"} size={14} />
+                        {voted ? "Cosigned" : "Cosign"}
+                        <span className="font-mono text-[11.5px] text-muted tabular" aria-label={`${votes.length} merchants marked this helpful`}>
+                          {votes.length}
                         </span>
                       </button>
                     </div>

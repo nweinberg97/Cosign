@@ -88,7 +88,7 @@ export function SessionDetailView({ id }: { id: string }) {
           )}
 
           <section aria-labelledby="about-session" className="mt-8">
-            <h2 id="about-session" className="text-[17px] font-semibold">
+            <h2 id="about-session" className="font-display text-[20px] font-bold">
               About this session
             </h2>
             <p className="mt-2 text-[15px] leading-7 text-ink-2">{session.description}</p>
@@ -96,7 +96,7 @@ export function SessionDetailView({ id }: { id: string }) {
 
           {session.expect.length > 0 && (
             <section aria-labelledby="expect" className="mt-7">
-              <h2 id="expect" className="text-[17px] font-semibold">
+              <h2 id="expect" className="font-display text-[20px] font-bold">
                 What to expect
               </h2>
               <ul className="mt-3 space-y-2">
@@ -113,7 +113,7 @@ export function SessionDetailView({ id }: { id: string }) {
           )}
 
           <section aria-labelledby="for-whom" className="mt-7">
-            <h2 id="for-whom" className="text-[17px] font-semibold">
+            <h2 id="for-whom" className="font-display text-[20px] font-bold">
               Who it&apos;s for
             </h2>
             <div className="mt-2 flex flex-wrap gap-1.5">
